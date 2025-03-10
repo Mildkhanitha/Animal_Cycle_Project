@@ -1,141 +1,96 @@
-from flask import Flask
-import dash
-from dash import dcc, html, Input, Output, State
 import networkx as nx
-import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 
-# สร้าง Flask App
-server = Flask(__name__)
-app = dash.Dash(__name__, server=server)
-
-# กราฟระบบนิเวศ
 class EcosystemGraph:
     def __init__(self):
         self.G = nx.DiGraph()
-        self.nodes = {}
+        self.nodes = {}  # เก็บประเภทของสัตว์
         self.ecosystem_type = "สัตว์บก"
 
     def set_ecosystem(self, eco_type):
+        """กำหนดประเภทของระบบนิเวศ (สัตว์บก / สัตว์น้ำ)"""
         self.ecosystem_type = eco_type
+        print(f"\n🔹 ระบบนิเวศถูกตั้งค่าเป็น: {eco_type}")
 
     def add_species(self, name, category):
+        """เพิ่มสิ่งมีชีวิตเข้าไปในระบบนิเวศ"""
         self.G.add_node(name)
         self.nodes[name] = category
+        print(f"✅ เพิ่ม {name} เป็น {category} ในระบบ {self.ecosystem_type}")
 
     def add_relationship(self, predator, prey):
+        """เพิ่มความสัมพันธ์ระหว่างสัตว์"""
         if predator in self.nodes and prey in self.nodes:
             self.G.add_edge(prey, predator)
+            print(f"🔗 {predator} ล่า {prey}")
+        else:
+            print("❌ ไม่พบชื่อสัตว์ กรุณาเพิ่มสัตว์ก่อน!")
 
     def analyze_ecosystem(self):
+        """วิเคราะห์ผลกระทบของระบบนิเวศ"""
         herbivores = [n for n in self.nodes if self.nodes[n] == "Herbivore"]
         predators = [n for n in self.nodes if self.nodes[n] == "Carnivore"]
 
-        analysis = []
+        print("\n📊 วิเคราะห์ระบบนิเวศ:")
         if len(herbivores) > len(predators) * 3:
-            analysis.append("⚠️ สัตว์กินพืชเยอะเกินไป อาจทำให้พืชลดลง!")
+            print("⚠️ สัตว์กินพืชเยอะเกินไป อาจทำให้พืชลดลง!")
         if len(predators) < len(herbivores) / 2:
-            analysis.append("⚠️ ผู้ล่ามีน้อย อาจทำให้สัตว์กินพืชเพิ่มขึ้นเร็ว!")
+            print("⚠️ ผู้ล่ามีน้อย อาจทำให้สัตว์กินพืชเพิ่มขึ้นเร็ว!")
         if len(predators) > len(herbivores):
-            analysis.append("⚠️ ผู้ล่าเยอะเกินไป อาจทำให้สัตว์กินพืชลดลง!")
-        return analysis
+            print("⚠️ ผู้ล่าเยอะเกินไป อาจทำให้สัตว์กินพืชลดลง!")
 
     def draw_graph(self):
+        """แสดงผลกราฟของระบบนิเวศ"""
         pos = nx.spring_layout(self.G, seed=42)
-        edge_x, edge_y = [], []
-        for edge in self.G.edges():
-            x0, y0 = pos[edge[0]]
-            x1, y1 = pos[edge[1]]
-            edge_x.append(x0)
-            edge_x.append(x1)
-            edge_x.append(None)
-            edge_y.append(y0)
-            edge_y.append(y1)
-            edge_y.append(None)
+        node_colors = {"Producer": "green", "Herbivore": "blue", "Carnivore": "red", "Decomposer": "brown"}
+        colors = [node_colors[self.nodes[node]] for node in self.G.nodes]
 
-        node_x, node_y, node_color, node_labels = [], [], [], []
-        color_map = {"Producer": "green", "Herbivore": "blue", "Carnivore": "red", "Decomposer": "brown"}
-        
-        for node in self.G.nodes():
-            x, y = pos[node]
-            node_x.append(x)
-            node_y.append(y)
-            node_color.append(color_map[self.nodes[node]])
-            node_labels.append(node)
+        plt.figure(figsize=(8, 6))
+        nx.draw(self.G, pos, with_labels=True, node_color=colors, edge_color="gray",
+                node_size=2000, font_size=10, font_weight="bold", arrows=True)
+        plt.title(f"Ecosystem Graph - {self.ecosystem_type}")
+        plt.show()
 
-        edge_trace = go.Scatter(x=edge_x, y=edge_y, line=dict(width=1, color="gray"), mode="lines")
-        node_trace = go.Scatter(
-            x=node_x, y=node_y, mode="markers+text", marker=dict(size=15, color=node_color),
-            text=node_labels, textposition="top center"
-        )
-
-        fig = go.Figure(data=[edge_trace, node_trace])
-        fig.update_layout(title=f"ระบบนิเวศ: {self.ecosystem_type}", showlegend=False)
-        return fig
-
-# สร้าง EcosystemGraph
+# ==========================
+# ระบบเมนูหลัก
+# ==========================
 eco = EcosystemGraph()
 
-# UI ของ Dash
-app.layout = html.Div([
-    html.H1("🌍 ระบบนิเวศเชิงโต้ตอบ"),
+while True:
+    print("\n🌍 ระบบจำลองระบบนิเวศ")
+    print("1️⃣ เลือกระบบนิเวศ (สัตว์บก / สัตว์น้ำ)")
+    print("2️⃣ เพิ่มสิ่งมีชีวิตในระบบนิเวศ")
+    print("3️⃣ เพิ่มห่วงโซ่อาหาร")
+    print("4️⃣ วิเคราะห์ผลกระทบของระบบนิเวศ")
+    print("5️⃣ แสดงกราฟระบบนิเวศ")
+    print("0️⃣ ออกจากโปรแกรม")
     
-    html.Label("เลือกประเภทระบบนิเวศ:"),
-    dcc.RadioItems(
-        id="select-ecosystem",
-        options=[{"label": "สัตว์บก", "value": "สัตว์บก"}, {"label": "สัตว์น้ำ", "value": "สัตว์น้ำ"}],
-        value="สัตว์บก",
-        inline=True
-    ),
-    
-    html.Label("เพิ่มสิ่งมีชีวิต:"),
-    dcc.Input(id="species-name", type="text", placeholder="ชื่อสัตว์"),
-    dcc.Dropdown(
-        id="species-category",
-        options=[
-            {"label": "ผู้ผลิต (Producer)", "value": "Producer"},
-            {"label": "สัตว์กินพืช (Herbivore)", "value": "Herbivore"},
-            {"label": "ผู้ล่า (Carnivore)", "value": "Carnivore"},
-            {"label": "ผู้ย่อยสลาย (Decomposer)", "value": "Decomposer"}
-        ],
-        placeholder="เลือกประเภท"
-    ),
-    html.Button("เพิ่มสัตว์", id="add-species", n_clicks=0),
+    choice = input("🔹 เลือกเมนู: ")
 
-    html.Label("กำหนดห่วงโซ่อาหาร:"),
-    dcc.Input(id="predator", type="text", placeholder="ผู้ล่า"),
-    dcc.Input(id="prey", type="text", placeholder="เหยื่อ"),
-    html.Button("เพิ่มความสัมพันธ์", id="add-relationship", n_clicks=0),
+    if choice == "1":
+        eco_type = input("🟢 เลือกประเภทระบบนิเวศ (สัตว์บก / สัตว์น้ำ): ")
+        eco.set_ecosystem(eco_type)
 
-    html.H3("📊 การวิเคราะห์ระบบนิเวศ"),
-    html.Div(id="ecosystem-analysis"),
-    
-    dcc.Graph(id="ecosystem-graph")
-])
+    elif choice == "2":
+        name = input("✏️ กรอกชื่อสิ่งมีชีวิต: ")
+        print("🔸 ประเภทที่สามารถเลือกได้: Producer, Herbivore, Carnivore, Decomposer")
+        category = input("🟡 เลือกประเภท: ")
+        eco.add_species(name, category)
 
-# Callbacks
-@app.callback(
-    Output("ecosystem-graph", "figure"),
-    Output("ecosystem-analysis", "children"),
-    Input("select-ecosystem", "value"),
-    Input("add-species", "n_clicks"),
-    Input("add-relationship", "n_clicks"),
-    State("species-name", "value"),
-    State("species-category", "value"),
-    State("predator", "value"),
-    State("prey", "value"),
-)
-def update_ecosystem(eco_type, _, __, species_name, species_category, predator, prey):
-    eco.set_ecosystem(eco_type)
-    
-    if species_name and species_category:
-        eco.add_species(species_name, species_category)
-    
-    if predator and prey:
+    elif choice == "3":
+        predator = input("🔴 กรอกชื่อผู้ล่า: ")
+        prey = input("🔵 กรอกชื่อเหยื่อ: ")
         eco.add_relationship(predator, prey)
-    
-    analysis = eco.analyze_ecosystem()
-    return eco.draw_graph(), html.Ul([html.Li(item) for item in analysis])
 
-# Run Server
-if __name__ == "__main__":
-    app.run_server(debug=True)
+    elif choice == "4":
+        eco.analyze_ecosystem()
+
+    elif choice == "5":
+        eco.draw_graph()
+
+    elif choice == "0":
+        print("👋 ออกจากโปรแกรม...")
+        break
+
+    else:
+        print("❌ กรุณาเลือกเมนูที่ถูกต้อง!")
