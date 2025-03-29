@@ -30,25 +30,40 @@ class EcosystemGraph:
         decomposers = [n for n in self.nodes if self.nodes[n] == "Decomposer"]
 
         print("\n📊 Ecosystem Analysis:")
+        messages = []
+
         if len(herbivores) > len(carnivores) * 3:
-            print("⚠️ Too many herbivores. Producers may be overconsumed.")
+            messages.append("⚠️ มีจำนวนผู้บริโภคพืชมากเกินไป อาจส่งผลให้ผู้ผลิตถูกบริโภคจนหมด")
         if len(carnivores) < len(herbivores) / 2:
-            print("⚠️ Too few carnivores. Herbivores may overpopulate.")
+            messages.append("⚠️ ผู้บริโภคระดับที่ 2 มีน้อยเกินไป อาจทำให้ผู้บริโภคพืชเพิ่มจำนวนเกินควบคุม")
         if len(carnivores) > len(herbivores):
-            print("⚠️ Too many carnivores. Herbivores may decline rapidly.")
+            messages.append("⚠️ ผู้บริโภคระดับที่ 2 มากเกินไป อาจส่งผลให้ผู้บริโภคพืชลดลงอย่างรวดเร็ว")
 
-        # Bar chart
-        categories = ['Producer', 'Herbivore', 'Carnivore', 'Decomposer']
-        counts = [len(producers), len(herbivores), len(carnivores), len(decomposers)]
+        if not messages:
+            messages.append("✅ ระบบนิเวศมีความสมดุลในระดับหนึ่ง")
 
-        plt.figure(figsize=(7, 5))
-        bars = plt.bar(categories, counts, color=["green", "blue", "red", "brown"])
-        plt.title("📊 Ecosystem Structure")
-        plt.ylabel("Number of Species")
-        for bar in bars:
-            yval = bar.get_height()
-            plt.text(bar.get_x() + bar.get_width()/2, yval + 0.1, yval, ha='center', fontsize=10)
+        for msg in messages:
+            print(msg)
 
+        # วาดกราฟความสัมพันธ์แสดงผลกระทบ
+        pos = nx.spring_layout(self.G, seed=42)
+        color_map = {
+            "Producer": "green",
+            "Herbivore": "blue",
+            "Carnivore": "red",
+            "Decomposer": "brown"
+        }
+        node_colors = [color_map.get(self.nodes[n], "gray") for n in self.G.nodes]
+
+        plt.figure(figsize=(10, 6))
+        nx.draw(self.G, pos, with_labels=True, node_color=node_colors, edge_color="gray",
+                node_size=2000, font_size=10, font_weight="bold", arrows=True)
+        
+        # แสดงคำอธิบายด้านบนกราฟ
+        plt.title("🌐 ผลกระทบจากโครงสร้างระบบนิเวศ", fontsize=14)
+        explanation = "\n".join(messages)
+        plt.figtext(0.5, 0.01, explanation, wrap=True, horizontalalignment='center', fontsize=10)
+        
         plt.tight_layout()
         plt.show()
 
