@@ -1,7 +1,19 @@
+
 import networkx as nx
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+import os
 import tkinter as tk
 from tkinter import messagebox
+
+font_path = "./fonts/THSarabunNew.ttf"
+if os.path.exists(font_path):
+    font_prop = fm.FontProperties(fname=font_path)
+    font_name = font_prop.get_name()
+else:
+    font_name = 'Tahoma'
+    font_prop = fm.FontProperties(family=font_name)
+
 
 class EcosystemGraph:
     def __init__(self):
@@ -20,7 +32,6 @@ class EcosystemGraph:
 
     def edit_species(self, old_name, new_name, new_category):
         if old_name in self.nodes:
-            # แก้ไขชื่อและประเภท
             self.nodes.pop(old_name)
             self.G = nx.relabel_nodes(self.G, {old_name: new_name})
             self.nodes[new_name] = new_category
@@ -69,7 +80,12 @@ class EcosystemGraph:
                     print(f"♻️ {deco} ย่อยซากของ {other}")
 
         print("✅ สร้างความสัมพันธ์อัตโนมัติเรียบร้อย")
+
     def analyze_ecosystem(self):
+        if not self.nodes:
+            print("❗️ ยังไม่มีข้อมูลสิ่งมีชีวิต กรุณาเพิ่มข้อมูลก่อนวิเคราะห์")
+            return
+
         producers = [n for n in self.nodes if self.nodes[n] == "Producer"]
         herbivores = [n for n in self.nodes if self.nodes[n] == "Herbivore"]
         carnivores = [n for n in self.nodes if self.nodes[n] == "Carnivore"]
@@ -100,18 +116,18 @@ class EcosystemGraph:
             messagebox.showinfo("📊 วิเคราะห์ผลกระทบ", "\n".join(messages))
         root.destroy()
 
-        # Graph
+        # Network Graph
         pos = nx.spring_layout(self.G, seed=42, k=1.2, scale=3)
         color_map = {"Producer": "green", "Herbivore": "blue", "Carnivore": "red", "Decomposer": "brown"}
         node_colors = [color_map.get(self.nodes[n], "gray") for n in self.G.nodes]
 
         plt.figure(figsize=(10, 6))
         nx.draw(self.G, pos, with_labels=True, node_color=node_colors, edge_color="gray",
-                node_size=2000, font_size=10, font_weight="bold", arrows=True)
+                node_size=2000, font_size=10, font_weight="bold", font_family=font_name, arrows=True)
         plt.title(f"🌱 Network Graph - {self.ecosystem_type}")
         plt.axis('off')
         plt.tight_layout()
-        plt.show()
+        plt.show(block=True)
 
         # Bar Chart
         categories = ['Producer', 'Herbivore', 'Carnivore', 'Decomposer']
@@ -127,20 +143,26 @@ class EcosystemGraph:
             plt.text(bar.get_x() + bar.get_width()/2, yval + 0.1, yval, ha='center', fontsize=10)
 
         plt.tight_layout()
-        plt.show()
+        plt.show(block=True)
 
     def draw_graph(self):
+        if not self.nodes:
+            print("❗️ ยังไม่มีข้อมูลสิ่งมีชีวิต กรุณาเพิ่มข้อมูลก่อนแสดงกราฟ")
+            return
+
         pos = nx.spring_layout(self.G, seed=42, k=1.2, scale=3)
         color_map = {"Producer": "green", "Herbivore": "blue", "Carnivore": "red", "Decomposer": "brown"}
         node_colors = [color_map.get(self.nodes[n], "gray") for n in self.G.nodes]
 
         plt.figure(figsize=(10, 6))
         nx.draw(self.G, pos, with_labels=True, node_color=node_colors, edge_color="gray",
-                node_size=2000, font_size=10, font_weight="bold", arrows=True)
+                node_size=2000, font_size=10, font_weight="bold", font_family=font_name, arrows=True)
         plt.title(f"🌍 โครงสร้างความสัมพันธ์ของระบบนิเวศ ({self.ecosystem_type})")
         plt.axis('off')
         plt.tight_layout()
-        plt.show()
+        plt.show(block=True)
+
+
 # ======= แสดง Popup ต้อนรับ =======
 root = tk.Tk()
 root.withdraw()
@@ -153,9 +175,20 @@ root.destroy()
 # ======= เมนูหลัก =======
 eco = EcosystemGraph()
 
+valid_categories = {
+    "ผู้ผลิต": "Producer",
+    "กินพืช": "Herbivore",
+    "กินเนื้อ": "Carnivore",
+    "ย่อยสลาย": "Decomposer",
+    "Producer": "Producer",
+    "Herbivore": "Herbivore",
+    "Carnivore": "Carnivore",
+    "Decomposer": "Decomposer"
+}
+
 while True:
     print("\n🌍 โปรแกรมจำลองระบบนิเวศ")
-    print("1️⃣ กำหนดประเภทระบบนิเวศ (บก[Terrestrial] / น้ำ[Aquatic])")
+    print("1️⃣ กำหนดประเภทระบบนิเวศ (บนบก / ในน้ำ)")
     print("2️⃣ เพิ่มสิ่งมีชีวิต")
     print("3️⃣ แก้ไขสิ่งมีชีวิต")
     print("4️⃣ ลบสิ่งมีชีวิต")
@@ -163,39 +196,47 @@ while True:
     print("6️⃣ วิเคราะห์ผลกระทบระบบนิเวศ")
     print("7️⃣ แสดงกราฟโครงสร้างความสัมพันธ์")
     print("0️⃣ ออกจากโปรแกรม")
-    choice = input("เลือกเมนู: ")
+    choice = input("เลือกเมนู: ").strip()
 
     if choice == "1":
         while True:
-            t = input("กรอกประเภท (Terrestrial / Aquatic): ").capitalize()
-            if t in ["Terrestrial", "Aquatic"]:
-                eco.set_ecosystem(t)
+            t = input("กรอกประเภท (บนบก / ในน้ำ): ").strip()
+            if t in ["บนบก", "Terrestrial"]:
+                eco.set_ecosystem("Terrestrial")
+                break
+            elif t in ["ในน้ำ", "Aquatic"]:
+                eco.set_ecosystem("Aquatic")
                 break
             else:
-                print("❗️ กรุณากรอกเฉพาะ Terrestrial หรือ Aquatic เท่านั้น")
+                print("❗️ กรุณากรอกเฉพาะ 'บนบก' หรือ 'ในน้ำ' เท่านั้น")
 
     elif choice == "2":
-        name = input("กรอกชื่อสิ่งมีชีวิต: ")
-
-        valid_categories = ["Producer", "Herbivore", "Carnivore", "Decomposer"]
+        name = input("กรอกชื่อสิ่งมีชีวิต: ").strip()
         while True:
-            print("ประเภท: ผู้ผลิต[Producer] / สัตว์กินพืช[Herbivore] / สัตว์กินเนื้อ[Carnivore] / ผู้ย่อยสลาย[Decomposer]")
-            cat = input("กรอกประเภท: ").capitalize()
-            if cat in valid_categories:
+            print("ประเภท: ผู้ผลิต / กินพืช / กินเนื้อ / ย่อยสลาย")
+            cat_input = input("กรอกประเภท: ").strip()
+            if cat_input in valid_categories:
+                cat = valid_categories[cat_input]
                 break
             else:
-                print("❗️ กรุณากรอกเฉพาะ Producer / Herbivore / Carnivore / Decomposer เท่านั้น")
+                print("❗️ กรุณากรอกประเภทให้ถูกต้อง")
 
         eco.add_species(name, cat)
 
     elif choice == "3":
-        old = input("กรอกชื่อสิ่งมีชีวิตเดิมที่ต้องการแก้ไข: ")
-        new = input("กรอกชื่อใหม่: ")
-        new_cat = input("กรอกประเภทใหม่ (Producer / Herbivore / Carnivore / Decomposer): ").capitalize()
+        old = input("กรอกชื่อสิ่งมีชีวิตเดิมที่ต้องการแก้ไข: ").strip()
+        new = input("กรอกชื่อใหม่: ").strip()
+        while True:
+            new_cat_input = input("กรอกประเภทใหม่ (ผู้ผลิต / กินพืช / กินเนื้อ / ย่อยสลาย): ").strip()
+            if new_cat_input in valid_categories:
+                new_cat = valid_categories[new_cat_input]
+                break
+            else:
+                print("❗️ กรุณากรอกประเภทให้ถูกต้อง")
         eco.edit_species(old, new, new_cat)
 
     elif choice == "4":
-        name = input("กรอกชื่อสิ่งมีชีวิตที่ต้องการลบ: ")
+        name = input("กรอกชื่อสิ่งมีชีวิตที่ต้องการลบ: ").strip()
         eco.delete_species(name)
 
     elif choice == "5":
