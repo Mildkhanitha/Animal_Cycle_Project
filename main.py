@@ -131,13 +131,8 @@ class EcosystemGraph:
 
         plt.figure(figsize=(10, 6), constrained_layout=True)
         nx.draw(self.G, pos, with_labels=True, node_color=node_colors, edge_color="gray",
-<<<<<<< HEAD
                 node_size=2000, font_size=10, font_weight="bold", font_family=font_name, arrows=True)
         plt.title(f"Network Graph - {self.ecosystem_type}")
-=======
-                node_size=2000, font_size=10, font_weight="bold",font_family=font_name, fontproperties=font_prop, arrows=True)
-        plt.title(f"🌱 Network Graph - {self.ecosystem_type}", fontproperties=font_prop)
->>>>>>> 6814ea5324d972fb5692f2c76b0179813dc5db68
         plt.axis('off')
         plt.show(block=True)
 
@@ -167,13 +162,8 @@ class EcosystemGraph:
 
         plt.figure(figsize=(10, 6))
         nx.draw(self.G, pos, with_labels=True, node_color=node_colors, edge_color="gray",
-<<<<<<< HEAD
                 node_size=2000, font_size=10, font_weight="bold", font_family=font_name, arrows=True)
         plt.title(f"🌍 โครงสร้างความสัมพันธ์ของระบบนิเวศ ({self.ecosystem_type})")
-=======
-                node_size=2000, font_size=10, font_weight="bold",font_family=font_name, arrows=True)
-        plt.title(f"🌍 โครงสร้างความสัมพันธ์ของระบบนิเวศ ({self.ecosystem_type})", fontproperties=font_prop)
->>>>>>> 6814ea5324d972fb5692f2c76b0179813dc5db68
         plt.axis('off')
         plt.tight_layout()
         plt.show(block=True)
@@ -230,7 +220,7 @@ while True:
         while True:
             name = input("กรอกชื่อสิ่งมีชีวิต (พิมพ์ 'ออก' เพื่อกลับไปหน้าหลัก): ").strip()
             if name == "ออก":
-                break  # ออกจากลูปและกลับไปหน้าหลัก
+                break 
             while True:
                 print("ประเภท: ผู้ผลิต / กินพืช / กินเนื้อ / ย่อยสลาย")
                 cat_input = input("กรอกประเภท: ").strip()
