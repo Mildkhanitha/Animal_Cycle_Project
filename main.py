@@ -115,16 +115,6 @@ class EcosystemGraph:
             messagebox.showinfo("📊 วิเคราะห์ผลกระทบ", "\n".join(messages))
         root.destroy()
 
-        pos = nx.spring_layout(self.G, seed=42, k=1.2, scale=3)
-        color_map = {"Producer": "green", "Herbivore": "blue", "Carnivore": "red", "Decomposer": "brown"}
-        node_colors = [color_map.get(self.nodes[n], "gray") for n in self.G.nodes]
-
-        plt.figure(figsize=(10, 6), constrained_layout=True)
-        nx.draw(self.G, pos, with_labels=True, node_color=node_colors, edge_color="gray",
-                node_size=2000, font_size=10, font_weight="bold", font_family=font_name, arrows=True)
-        plt.title(f"Network Graph - {self.ecosystem_type}")
-        plt.axis('off')
-        plt.show(block=True)
 
         categories = ['Producer', 'Herbivore', 'Carnivore', 'Decomposer']
         counts = [len(producers), len(herbivores), len(carnivores), len(decomposers)]
