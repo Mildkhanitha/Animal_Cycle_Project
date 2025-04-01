@@ -95,13 +95,13 @@ class EcosystemGraph:
         warning = False
 
         if len(herbivores) > len(carnivores) * 3:
-            messages.append("⚠️ Herbivore มากเกินไป อาจทำให้ Producer ถูกกินหมด")
+            messages.append("⚠️ สัตว์กินพืช มากเกินไป อาจทำให้ ผู้ผลิต ถูกกินหมด")
             warning = True
         if len(carnivores) < len(herbivores) / 2:
-            messages.append("⚠️ Carnivore น้อยเกินไป อาจทำให้ Herbivore เพิ่มเร็วเกิน")
+            messages.append("⚠️ สัตว์กินเนื้อ น้อยเกินไป อาจทำให้ สัตว์กินพืช เพิ่มเร็วเกิน")
             warning = True
         if len(carnivores) > len(herbivores):
-            messages.append("⚠️ Carnivore มากเกินไป อาจทำให้ Herbivore สูญพันธุ์")
+            messages.append("⚠️ สัตว์กินเนื้อ มากเกินไป อาจทำให้ สัตว์กินพืช สูญพันธุ์")
             warning = True
 
         if not messages:
