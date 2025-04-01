@@ -209,17 +209,20 @@ while True:
                 print("❗️ กรุณากรอกเฉพาะ 'บนบก' หรือ 'ในน้ำ' เท่านั้น")
 
     elif choice == "2":
-        name = input("กรอกชื่อสิ่งมีชีวิต: ").strip()
         while True:
-            print("ประเภท: ผู้ผลิต / กินพืช / กินเนื้อ / ย่อยสลาย")
-            cat_input = input("กรอกประเภท: ").strip()
-            if cat_input in valid_categories:
-                cat = valid_categories[cat_input]
-                break
-            else:
-                print("❗️ กรุณากรอกประเภทให้ถูกต้อง")
+            name = input("กรอกชื่อสิ่งมีชีวิต (พิมพ์ 'ออก' เพื่อกลับไปหน้าหลัก): ").strip()
+            if name == "ออก":
+                break  # ออกจากลูปและกลับไปหน้าหลัก
+            while True:
+                print("ประเภท: ผู้ผลิต / กินพืช / กินเนื้อ / ย่อยสลาย")
+                cat_input = input("กรอกประเภท: ").strip()
+                if cat_input in valid_categories:
+                    cat = valid_categories[cat_input]
+                    break
+                else:
+                    print("❗️ กรุณากรอกประเภทให้ถูกต้อง")
 
-        eco.add_species(name, cat)
+            eco.add_species(name, cat)
 
     elif choice == "3":
         old = input("กรอกชื่อสิ่งมีชีวิตเดิมที่ต้องการแก้ไข: ").strip()
