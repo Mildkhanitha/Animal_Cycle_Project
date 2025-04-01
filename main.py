@@ -220,7 +220,7 @@ while True:
         while True:
             name = input("กรอกชื่อสิ่งมีชีวิต (พิมพ์ 'ออก' เพื่อกลับไปหน้าหลัก): ").strip()
             if name == "ออก":
-                break  # ออกจากลูปและกลับไปหน้าหลัก
+                break 
             while True:
                 print("ประเภท: ผู้ผลิต / กินพืช / กินเนื้อ / ย่อยสลาย")
                 cat_input = input("กรอกประเภท: ").strip()
