@@ -63,7 +63,19 @@ class EcosystemGraph:
 
         print("✅ สร้างความสัมพันธ์อัตโนมัติเรียบร้อย")
 
-    
+    def edit_species(self, old_name, new_name, new_category):
+        if old_name not in self.nodes:
+            print(f"❗️ ไม่พบ {old_name} ในระบบ")
+            return
+
+        # อัปเดตชื่อในกราฟ
+        self.G = nx.relabel_nodes(self.G, {old_name: new_name})
+        
+        # อัปเดตข้อมูลใน nodes
+        self.nodes.pop(old_name)
+        self.nodes[new_name] = new_category
+        print(f"✏️ แก้ไข {old_name} เป็น {new_name} ({new_category}) เรียบร้อย")
+
     def draw_graph(self):
         if not self.nodes:
             print("❗️ ยังไม่มีข้อมูลสิ่งมีชีวิต กรุณาเพิ่มข้อมูลก่อนแสดงกราฟ")
