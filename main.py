@@ -120,6 +120,46 @@ class EcosystemGraph:
 
         plt.show(block=True)
 
+# ======= ชุดข้อมูลตัวอย่าง =======
+sample_datasets = {
+    "1": [
+        {"name": "หญ้า", "category": "Producer"},
+        {"name": "ต้นไม้", "category": "Producer"},
+        {"name": "กระต่าย", "category": "Herbivore"},
+        {"name": "กวาง", "category": "Herbivore"},
+        {"name": "วัว", "category": "Herbivore"},
+        {"name": "สิงโต", "category": "Carnivore"},
+        {"name": "เหยี่ยว", "category": "Carnivore"},
+        {"name": "งู", "category": "Carnivore"},
+        {"name": "เชื้อรา", "category": "Decomposer"},
+        {"name": "แมลง", "category": "Decomposer"}
+    ],
+    "2": [
+        {"name": "ไผ่", "category": "Producer"},
+        {"name": "ต้นหญ้า", "category": "Producer"},
+        {"name": "กระต่าย", "category": "Herbivore"},
+        {"name": "แพะ", "category": "Herbivore"},
+        {"name": "หมาป่า", "category": "Carnivore"},
+        {"name": "เหยี่ยว", "category": "Carnivore"},
+        {"name": "เชื้อรา", "category": "Decomposer"},
+        {"name": "แบคทีเรียดิน", "category": "Decomposer"}
+    ],
+    "3": [
+        {"name": "เฟิร์น", "category": "Producer"},
+        {"name": "ไม้ใหญ่", "category": "Producer"},
+        {"name": "วัว", "category": "Herbivore"},
+        {"name": "ควาย", "category": "Herbivore"},
+        {"name": "ช้าง", "category": "Herbivore"},
+        {"name": "เสือ", "category": "Carnivore"},
+        {"name": "สิงโต", "category": "Carnivore"},
+        {"name": "งู", "category": "Carnivore"},
+        {"name": "เหยี่ยว", "category": "Carnivore"},
+        {"name": "เชื้อรา", "category": "Decomposer"},
+        {"name": "แมลง", "category": "Decomposer"},
+        {"name": "แบคทีเรียดิน", "category": "Decomposer"}
+    ]
+}
+
 # ======= เมนูหลัก =======
 eco = EcosystemGraph()
 
@@ -149,6 +189,7 @@ while True:
     print("3️⃣ สร้างความสัมพันธ์อาหารอัตโนมัติ")
     print("4️⃣ วิเคราะห์ผลกระทบระบบนิเวศ")
     print("5️⃣ แสดงกราฟโครงสร้างความสัมพันธ์")
+    print("9️⃣ ใช้ชุดข้อมูลตัวอย่าง")
     print("0️⃣ ออกจากโปรแกรม")
     choice = input("เลือกเมนู: ").strip()
 
@@ -179,6 +220,19 @@ while True:
 
     elif choice == "5":
         eco.draw_graph()
+
+    elif choice == "9":
+        print("\n📂 เลือกชุดข้อมูลตัวอย่าง:")
+        print("1️⃣ ป่าเขตร้อน (10 ชนิด)")
+        print("2️⃣ ทุ่งหญ้า (8 ชนิด)")
+        print("3️⃣ ป่าดิบชื้น (12 ชนิด)")
+        sub_choice = input("เลือกชุดข้อมูล (1-3): ").strip()
+        if sub_choice in sample_datasets:
+            for data in sample_datasets[sub_choice]:
+                eco.add_species(data["name"], data["category"])
+            print("✅ เพิ่มชุดข้อมูลตัวอย่างเรียบร้อย")
+        else:
+            print("❌ เลือกชุดข้อมูลไม่ถูกต้อง")
 
     elif choice == "0":
         print("👋 ออกจากโปรแกรม...")
