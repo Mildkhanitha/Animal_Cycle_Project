@@ -15,6 +15,8 @@ else:
     font_name = 'Tahoma'
     font_prop = fm.FontProperties(family=font_name)
 
+
+# ======= ตั้งค่าฟอนต์ =======
 class EcosystemGraph:
     def __init__(self):
         self.G = nx.DiGraph()
@@ -232,10 +234,29 @@ while True:
                 print(f"❗️ '{name}' มีอยู่แล้วในระบบ")
                 continue
             eco.add_species(name, cat)
+        while True:
+            name = input("กรอกชื่อสิ่งมีชีวิต (พิมพ์ 'ออก' เพื่อกลับ): ").strip()
+            if name == "ออก":
+                break
+            while True:
+                print("ประเภท: ผู้ผลิต / กินพืช / กินเนื้อ / ย่อยสลาย")
+                cat_input = input("กรอกประเภท: ").strip()
+                if cat_input in valid_categories:
+                    cat = valid_categories[cat_input]
+                    break
+                else:
+                    print("❗️ กรุณากรอกประเภทให้ถูกต้อง")
+            
+            if name in eco.nodes:
+                print(f"❗️ '{name}' มีอยู่แล้วในระบบ")
+                continue
+            eco.add_species(name, cat)
 
     
     elif choice == "2":
         show_current_species()
+        name = input("กรอกชื่อสิ่งมีชีวิตที่ต้องการลบ: ").strip()
+        eco.delete_species(name)
         name = input("กรอกชื่อสิ่งมีชีวิตที่ต้องการลบ: ").strip()
         eco.delete_species(name)
 
@@ -245,7 +266,12 @@ while True:
     elif choice == "4":
         eco.analyze_ecosystem()
 
+    
     elif choice == "5":
+        if not eco.nodes:
+            print("⚠️ ยังไม่มีข้อมูลสิ่งมีชีวิต กรุณาเพิ่มข้อมูลก่อนแสดงกราฟ")
+        else:
+            eco.draw_graph()
         eco.draw_graph()
 
     elif choice == "9":
