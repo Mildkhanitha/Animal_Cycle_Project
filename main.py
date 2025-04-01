@@ -82,7 +82,6 @@ class EcosystemGraph:
         plt.show(block=True)
 
     def analyze_ecosystem(self):
-        
         if not self.nodes:
             print("❗️ ยังไม่มีข้อมูลสิ่งมีชีวิต กรุณาเพิ่มข้อมูลก่อนวิเคราะห์")
             return
@@ -91,20 +90,7 @@ class EcosystemGraph:
         herbivores = [n for n in self.nodes if self.nodes[n] == "Herbivore"]
         carnivores = [n for n in self.nodes if self.nodes[n] == "Carnivore"]
         decomposers = [n for n in self.nodes if self.nodes[n] == "Decomposer"]
-        for herb in herbivores:
-            for prod in producers:
-                if not self.G.has_edge(prod, herb):
-                    self.G.add_edge(prod, herb)
 
-        for carn in carnivores:
-            for herb in herbivores:
-                if not self.G.has_edge(herb, carn):
-                    self.G.add_edge(herb, carn)
-
-        for deco in decomposers:
-            for other in self.nodes:
-                if other != deco and not self.G.has_edge(other, deco):
-                    self.G.add_edge(other, deco)
         messages = []
         warning = False
 
@@ -237,7 +223,7 @@ while True:
     print("\n🌍 โปรแกรมจำลองระบบนิเวศ (บนบก)")
     print("1️⃣ เพิ่มสิ่งมีชีวิต")
     print("2️⃣ ลบสิ่งมีชีวิต")
-    print("3️⃣ สร้างความสัมพันธ์ในลำดับห่วงโซ่อาหารอัตโนมัติ")
+    print("3️⃣ สร้างความสัมพันธ์ในลำดับห่วงโซ่อาหาร")
     print("4️⃣ วิเคราะห์ผลกระทบระบบนิเวศ")
     print("5️⃣ แสดงกราฟโครงสร้างความสัมพันธ์")
     print("6️⃣ แก้ไขสิ่งมีชีวิต")
