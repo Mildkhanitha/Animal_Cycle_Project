@@ -220,25 +220,10 @@ while True:
                 else:
                     print("❗️ กรุณากรอกประเภทให้ถูกต้อง")
             eco.add_species(name, cat)
-        while True:
-            name = input("กรอกชื่อสิ่งมีชีวิต (พิมพ์ 'ออก' เพื่อกลับ): ").strip()
-            if name == "ออก":
-                break
-            while True:
-                print("ประเภท: ผู้ผลิต / กินพืช / กินเนื้อ / ย่อยสลาย")
-                cat_input = input("กรอกประเภท: ").strip()
-                if cat_input in valid_categories:
-                    cat = valid_categories[cat_input]
-                    break
-                else:
-                    print("❗️ กรุณากรอกประเภทให้ถูกต้อง")
-            eco.add_species(name, cat)
 
     
     elif choice == "2":
         show_current_species()
-        name = input("กรอกชื่อสิ่งมีชีวิตที่ต้องการลบ: ").strip()
-        eco.delete_species(name)
         name = input("กรอกชื่อสิ่งมีชีวิตที่ต้องการลบ: ").strip()
         eco.delete_species(name)
 
