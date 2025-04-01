@@ -121,28 +121,26 @@ class EcosystemGraph:
         color_map = {"Producer": "green", "Herbivore": "blue", "Carnivore": "red", "Decomposer": "brown"}
         node_colors = [color_map.get(self.nodes[n], "gray") for n in self.G.nodes]
 
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(10, 6), constrained_layout=True)
         nx.draw(self.G, pos, with_labels=True, node_color=node_colors, edge_color="gray",
                 node_size=2000, font_size=10, font_weight="bold", font_family=font_name, arrows=True)
-        plt.title(f"🌱 Network Graph - {self.ecosystem_type}")
+        plt.title(f"Network Graph - {self.ecosystem_type}")
         plt.axis('off')
-        plt.tight_layout()
         plt.show(block=True)
 
         # Bar Chart
         categories = ['Producer', 'Herbivore', 'Carnivore', 'Decomposer']
         counts = [len(producers), len(herbivores), len(carnivores), len(decomposers)]
 
-        plt.figure(figsize=(7, 5))
+        plt.figure(figsize=(7, 5), constrained_layout=True)
         bars = plt.bar(categories, counts, color=["green", "blue", "red", "brown"])
-        plt.title("📊 โครงสร้างระบบนิเวศ")
-        plt.ylabel("จำนวนสิ่งมีชีวิต")
+        plt.title("โครงสร้างระบบนิเวศ", fontproperties=font_prop)
+        plt.ylabel("จำนวนสิ่งมีชีวิต", fontproperties=font_prop)
 
         for bar in bars:
             yval = bar.get_height()
             plt.text(bar.get_x() + bar.get_width()/2, yval + 0.1, yval, ha='center', fontsize=10)
 
-        plt.tight_layout()
         plt.show(block=True)
 
     def draw_graph(self):
